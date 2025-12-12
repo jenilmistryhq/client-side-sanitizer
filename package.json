@@ -1,0 +1,34 @@
+{
+  "name": "client-side-sanitizer",
+  "version": "1.0.0",
+  "description": "A lightweight, real-time client-side input sanitizer for React and Express.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "xss",
+    "sanitizer",
+    "input",
+    "utility"
+  ],
+  "author": "Jenil Mistry",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.28.3",
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5"
+  }
+}
