@@ -1,5 +1,3 @@
-// src/index.js
-
 /**
  * Sanitizes a string by stripping XSS-related characters and returns the cleaned string 
  * and the count of removed characters, allowing for caret position correction.
