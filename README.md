@@ -1,15 +1,18 @@
-# 🛡️ client-side-sanitizer 
+# 🛡️ client-side-sanitizer
 
-A lightweight, high-performance utility for real-time input sanitization, primarily designed for controlled React components, including logic for precise cursor position management.
+A lightweight, high-performance utility for real-time input sanitization, primarily designed for controlled React components. It provides a robust solution to immediately strip unwanted or malicious characters while ensuring the user's input cursor remains precisely in place.
 
-It immediately strips XSS-related characters to ensure the UI state remains clean and safe as the user types.
+---
 
-## ✨ Features
+## ✨ Key Features
 
-* **Real-time XSS Prevention:** Instantly removes characters like `< > " ' & /`.
-* **Caret Position Fix:** Returns metadata needed to prevent the cursor from jumping to the end of the input field after sanitization.
-* **Isomorphic:** Works in both Node.js (Express) and Browser (React, Vue, etc.) environments.
+* **Configurable Presets:** All built-in rules (`text`, `number`, `url`, etc.) can be globally overridden by the user using `setPresets()`.
+* **Real-time XSS Prevention:** Instantly removes characters like `< > ' " & /` for safety.
+* **Precise Caret Position Fix:** Returns metadata (`removedCount`) required for controlled components to prevent the cursor from jumping to the end of the input field after sanitization.
 * **Zero Dependencies:** Extremely lightweight and fast.
+* **Isomorphic (Core Logic):** Works reliably in both Node.js (for server-side validation) and Browser environments.
+
+---
 
 ## 💾 Installation
 

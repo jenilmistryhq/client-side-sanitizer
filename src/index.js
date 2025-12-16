@@ -1,77 +1,78 @@
 /**
- * Client-Side Sanitizer
- * A robust, real-time input sanitizer with configurable whitelist support.
+ * client-side-sanitizer V1.2.0
+ * Features:
+ * 1. Global Regex Presets (Text, Number, Email, URL, etc.) - Configurable via setPresets
+ * 2. Robust Regex Stripping/Whitelisting - Handles preset type or custom 'allow' config
  */
 
-// 1. Define Base Presets (Regex Strings for reusability)
-const PRESETS = {
-    // TEXT: The default. It acts as a Blacklist, stripping common XSS chars.
-    // We remove: ' " < > & /
+// --- DEFAULT REGEX PRESETS (Mutable defaults) ---
+let PRESETS = {
+    // BLACKLIST: Removes common XSS characters (quotes, angle brackets, ampersand, slash)
     'text': /['"<>&/]/g, 
 
-    // NUMBER: Allows only digits 0-9.
+    // WHITELIST: Digits only
     'number': /[^0-9]/g, 
     
-    // EMAIL (Basic): Allows letters, numbers, @, dot, dash, underscore.
+    // WHITELIST: Basic Email characters
     'email': /[^a-zA-Z0-9@._-]/g, 
     
-    // URL-Friendly: Allows alphanumeric, dashes, dots, underscores, slashes, colons.
+    // WHITELIST: Basic URL characters
     'url': /[^a-zA-Z0-9._\-/:?=&%]/g,
+    
 };
 
-// Default behavior if nothing is passed
 const DEFAULT_TYPE = 'text';
 
+// --- CONFIGURATION FUNCTION ---
 /**
- * Sanitizes a string based on a configurable whitelist or preset.
- * * @param {string} input - The raw string input from the user.
+ * Allows the user to override or extend the default regex presets globally.
+ * This makes all predefined types (text, number, email, url) fully configurable.
+ * * @param {object} newPresets
+ */
+export const setPresets = (newPresets) => {
+    if (typeof newPresets === 'object' && newPresets !== null) {
+        // Merge new presets with existing ones (new ones override old ones)
+        PRESETS = { ...PRESETS, ...newPresets };
+        console.log("Sanitizer presets updated. Current keys:", Object.keys(PRESETS));
+    } else {
+        console.error("setPresets must be called with a valid object of { name: RegExp } pairs.");
+    }
+};
+
+// --- MAIN EXPORT ---
+/**
+ * Sanitizes a string based on a configurable rule (preset or custom whitelist).
+ * @param {string} input - The raw string input from the user.
  * @param {object|string} config - Configuration object OR a simple string type.
- * @param {string} [config.type] - Built-in preset ('text', 'number', 'email', 'url').
- * @param {string} [config.allow] - Custom string of allowed characters (regex style, e.g. "A-Z0-9").
  * @returns {{safeValue: string, removedCount: number}} 
  */
 export const sanitizeInput = (input, config = DEFAULT_TYPE) => {
-    // Safety check: ensure input is a string
     if (typeof input !== 'string') {
         return { safeValue: '', removedCount: 0 };
     }
     
     const originalLength = input.length;
+    let options = typeof config === 'string' ? { type: config } : config;
     let finalRegex;
 
-    // Normalize config: handle if user passed just "number" string instead of { type: "number" }
-    let options = {};
-    if (typeof config === 'string') {
-        options.type = config;
-    } else {
-        options = config;
-    }
-
-    // --- LOGIC BRANCHING ---
-
-    // Option A: User provided a Custom Whitelist (e.g., { allow: "A-Z" })
+    // Custom Whitelist 
     if (options.allow) {
         try {
-            // Build a regex that matches anything NOT in the allowed list.
-            // Example: allow="A-Z" -> Regex becomes /[^A-Z]/g
+            // Build a Whitelist Regex: Match anything NOT in the allowed set.
             finalRegex = new RegExp(`[^${options.allow}]`, 'g');
         } catch (e) {
-            console.error("Client-Side-Sanitizer: Invalid 'allow' regex provided. Falling back to default text safety.");
-            finalRegex = PRESETS['text'];
+            console.error("Client-Side-Sanitizer: Invalid 'allow' regex. Falling back to default 'text'.");
+            finalRegex = PRESETS[DEFAULT_TYPE];
         }
     } 
-    // Option B: User requested a known Preset (e.g., { type: "number" })
-    else if (options.type && PRESETS[options.type]) {
-        finalRegex = PRESETS[options.type];
-    } 
-    // Option C: Default fallback (Basic XSS stripping)
+    // B. Preset Regex
     else {
-        finalRegex = PRESETS['text'];
+        const type = options.type || DEFAULT_TYPE;
+        // Use the requested type, or fall back to the default 'text' preset
+        finalRegex = PRESETS[type] || PRESETS[DEFAULT_TYPE];
     }
     
-    // --- EXECUTION ---
-    
-    // Replace invalid characters with empty string
+    // Perform the replacement
     const safeValue = input.replace(finalRegex, '');
     
     const removedCount = originalLength - safeValue.length;
