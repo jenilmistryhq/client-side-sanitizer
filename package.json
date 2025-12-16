@@ -1,6 +1,6 @@
 {
   "name": "client-side-sanitizer",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A lightweight, real-time client-side input sanitizer for React and Express.",
   "main": "dist/index.js",
   "module": "dist/index.js",

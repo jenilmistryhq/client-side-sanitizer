@@ -1,22 +1,25 @@
 ## **🛡️Client Side Sanitizer**
 
-**A lightweight, high-performance utility for real-time input sanitization, primarily
-designed for controlled React components.**
+A lightweight, high-performance utility for real-time input sanitization, primarily
+designed for controlled React components.
 This package instantly sanitizes user input using regular expressions, preventing XSS
 injection and ensuring a clean UI state. Its key strength is providing the data necessary to fix
 the common cursor jump problem in React forms after state updates.
+
 ---
 ## **✨ Features**
 
-```
-● Real-time XSS Prevention: Instantly removes blacklisted characters (`<`, `>`, `"`, `'`,
+● **Real-time XSS Prevention:** Instantly removes blacklisted characters (`<`, `>`, `"`, `'`,
 `&`, `/`) or strictly whitelists characters based on the configuration.
-● Configurable Presets: Default rules for `text`, `number`, `email`, and `url` can be
+
+● **Configurable Presets:** Default rules for `text`, `number`, `email`, and `url` can be
 globally overridden or extended by the user using `setPresets()`.
-● Caret Position Fix: Returns metadata required for precise cursor position
+
+● **Caret Position Fix:** Returns metadata required for precise cursor position
 management in controlled inputs, preventing the cursor from jumping to the end.
-● Zero Dependencies: Extremely lightweight and fast.
-```
+
+● **Zero Dependencies:** Extremely lightweight and fast.
+
 ---
 ## **💾 Installation**
 
@@ -30,11 +33,12 @@ npm install client-side-sanitizer
 The package exports two functions: sanitizeInput (the core logic) and setPresets (for global
 configuration).
 
-## **1. Global Configuration (setPresets)**
+## 1. Global Configuration (setPresets)
 
 Before using the sanitizer, you can globally override the default rules for presets like number
 or text. This should be done once in your application's entry file (e.g., src/main.jsx or
 src/App.jsx).
+
 **File: src/main.jsx (or src/App.jsx)**
 ```
 import React from 'react';
@@ -56,8 +60,6 @@ setPresets({
     // Add a brand new, custom preset for zip codes.
     'zipcode': /[^0-9-]/g 
 });
-// ======================================
-
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -65,10 +67,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </React.StrictMode>
 );
 ```
-## **2. Using the Sanitizer in a React Component**
+## 2. Using the Sanitizer in a React Component
 
 Use sanitizeInput within your component's change handler to get the clean value and the
 removedCount needed for cursor fixation.
+
 **File: SafeInputComponent.jsx**
 ```
 import React, { useState, useCallback, useRef, useEffect } from 'react';
